@@ -1,14 +1,13 @@
 from __future__ import absolute_import
 from functools import wraps
 from sanic.request import Request
-from sanic.exceptions import abort as original_sanic_abort
 from sanic.views import HTTPMethodView
 from werkzeug.exceptions import NotAcceptable
 from sanic_restful_api.utils import unpack, accept_mimetypes
 from sanic_restful_api.representations.json import output_json
 from collections import OrderedDict
 from sanic import Blueprint, Sanic
-from sanic.exceptions import ServerError
+from sanic.exceptions import ServerError, SanicException
 from sanic.response import BaseHTTPResponse, text
 from werkzeug.http import parse_accept_header
 try:
@@ -23,7 +22,7 @@ __all__ = ('Api', 'Resource', 'marshal', 'marshal_with',
 def abort(http_status_code, message=None):
     """Raise a HTTPException for the given http_status_code. Attach a message to the exception for later processing.
     """
-    original_sanic_abort(http_status_code, message)
+    raise SanicException(message, http_status_code)
 
 
 DEFAULT_REPRESENTATIONS = [('application/json', output_json)]
